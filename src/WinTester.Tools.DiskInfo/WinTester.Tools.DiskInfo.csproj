@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>WinTester.Tools.DiskInfo</RootNamespace>
+    <!-- Plain net8.0 like WinTester.Tools.Devices. Windows-only classes carry SupportedOSPlatform("windows").
+         AllowUnsafeBlocks is not needed: the NVMe request is built in byte arrays. -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- WMI access to the SMART tables and the storage classes. Same version as the other WMI projects. -->
+    <PackageReference Include="System.Management" Version="8.0.0" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>WinTester.Tools.BatteryCharge</RootNamespace>
+    <!-- Plain net8.0, not net8.0-windows — same reasoning as WinTester.Tools.BatteryDrain: the WMI
+         battery-status queries and child-process stress engines here only function on Windows at runtime
+         (guarded by OperatingSystem.IsWindows() where it matters), but the project itself should still
+         restore/build on a non-Windows dev machine or CI runner. -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WinTester.Core\WinTester.Core.csproj" />
+    <!-- Battery Charge Test (Tab 2 tool) — a second mode inside the same Battery tile as Battery Drain,
+         sharing BatteryDrainMethod (the CPU/GPU load-method enum) and BatteryRuntimeStatusReader/
+         SystemIdentityReader (via WinTester.Tools.BatteryDrain) rather than duplicating either. -->
+    <ProjectReference Include="..\WinTester.Tools.BatteryDrain\WinTester.Tools.BatteryDrain.csproj" />
+    <ProjectReference Include="..\WinTester.Tests.Cpu\WinTester.Tests.Cpu.csproj" />
+    <ProjectReference Include="..\WinTester.Tests.Gpu\WinTester.Tests.Gpu.csproj" />
+    <ProjectReference Include="..\WinTester.Tests.Power\WinTester.Tests.Power.csproj" />
+    <!-- Reuses HtmlReportGenerator.GetVendoredChartJsSource's vendored Chart.js embedded resource rather
+         than shipping a second copy. -->
+    <ProjectReference Include="..\WinTester.Reporting\WinTester.Reporting.csproj" />
+    <!-- The report embeds a Windows Activation subsection (shared System Information card) — needs
+         ActivationInfoService directly (BatteryChargeRunner calls it itself, not just via BatteryDrain),
+         same reasoning as WinTester.Tools.BatteryDrain's own reference below. -->
+    <ProjectReference Include="..\WinTester.Tools.Activation\WinTester.Tools.Activation.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>WinTester.Tools.HardwareErrors</RootNamespace>
+    <!-- Plain net8.0, not net8.0-windows, like WinTester.Tools.Devices: the event log read only works on
+         Windows at runtime (guarded by OperatingSystem.IsWindows()), but the project itself should still
+         restore and build on a non-Windows dev machine or CI runner. -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WinTester.Core\WinTester.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- EventLogReader / EventLogQuery live in this package's assembly. Version matches the other 8.0.0
+         BCL-adjacent packages in the solution. -->
+    <PackageReference Include="System.Diagnostics.EventLog" Version="8.0.0" />
+  </ItemGroup>
+
+</Project>

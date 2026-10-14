@@ -1,0 +1,37 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>WinTester.Tests.Gpu</RootNamespace>
+    <!-- Plain net8.0, not net8.0-windows, same reasoning as WinTester.Tests.Cpu: the Win32 P/Invoke calls
+         in Win32Interop.cs only function on Windows at runtime (guarded by OperatingSystem.IsWindows()
+         where it matters), but the project itself should still restore/build on a non-Windows dev
+         machine or CI runner. No WPF types are referenced here on purpose: MainViewModel supplies real
+         screen coordinates from WPF-land via a plain delegate instead of this project taking a UseWPF
+         dependency it doesn't otherwise need. -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WinTester.Core\WinTester.Core.csproj" />
+  </ItemGroup>
+
+  <!-- Phase 6 (field-issues tracker): GpuApiCompatibilityChecker's Direct3D 11 pre-flight canary. MIT
+       licensed (Amer Koleci et al.), managed wrapper over DXGI/D3D11/D3DCompiler — no vendor binary, no
+       licensing question the way the IPDT/GravityMark vendor deps needed one (Phase 2.2). First package
+       reference this project has ever needed. DXGI/Direct3D11/D3DCompiler at 3.6.2 are now build-confirmed,
+       not just a guessed pin: Phase 7.2/7.3's real `dotnet build` runs restored and built against exactly
+       this version (the errors those rounds fixed were wrong guesses about the Vortice API *surface* —
+       wrong type/member names and overloads — not a restore or version-resolution failure). Phase 7.6
+       adds Vortice.Direct3D12 for the new D3D12 pre-flight probe, pinned to the same 3.6.2 to match the
+       rest of the set; this one package reference hasn't been through a real build yet the way the other
+       three have — check for newer non-preview releases if a build against it fails. -->
+  <ItemGroup>
+    <PackageReference Include="Vortice.DXGI" Version="3.6.2" />
+    <PackageReference Include="Vortice.Direct3D11" Version="3.6.2" />
+    <PackageReference Include="Vortice.Direct3D12" Version="3.6.2" />
+    <PackageReference Include="Vortice.D3DCompiler" Version="3.6.2" />
+  </ItemGroup>
+
+</Project>

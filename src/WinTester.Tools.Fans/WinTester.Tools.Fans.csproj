@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>WinTester.Tools.Fans</RootNamespace>
+    <!-- Plain net8.0, not net8.0-windows — same reasoning as WinTester.Tools.Devices/Activation/Bitlocker:
+         the WMI queries here only function on Windows at runtime (guarded by OperatingSystem.IsWindows()),
+         but the project itself should still restore/build on a non-Windows dev machine or CI runner.
+         Deliberately has no reference to WinTester.Sensors: platform detection here is WMI-only and
+         doesn't need to know LibreHardwareMonitor exists. The generic backend is passed in by the caller
+         (MainViewModel) as a plain IFanControlService, keeping this project able to select between future
+         vendor backends without depending on any one of them either. -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WinTester.Core\WinTester.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Win32_BaseBoard/Win32_ComputerSystem/Win32_SystemEnclosure enumeration. 8.0.0 matches every other
+         WMI consumer in the solution except WinTester.Sensors, which is pinned to 10.0.2 by
+         LibreHardwareMonitorLib's own minimum. -->
+    <PackageReference Include="System.Management" Version="8.0.0" />
+  </ItemGroup>
+
+</Project>

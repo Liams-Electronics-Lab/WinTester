@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>WinTester.Tests.Memory</RootNamespace>
+    <!-- Plain net8.0, not net8.0-windows — same reasoning as WinTester.Tests.Cpu/Gpu/Storage: the WMI call
+         in MemorySizer.cs only functions on Windows at runtime (guarded by OperatingSystem.IsWindows()
+         where it matters), but the project itself should still restore/build on a non-Windows dev machine
+         or CI runner. MemoryTestEngine.cs itself is plain managed C# with no platform dependency at all. -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WinTester.Core\WinTester.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- WMI access for MemorySizer (Win32_OperatingSystem free/total physical memory) — same
+         package/version already proven out by WinTester.Tests.Storage's DiskInfoProvider. -->
+    <PackageReference Include="System.Management" Version="8.0.0" />
+  </ItemGroup>
+
+</Project>
