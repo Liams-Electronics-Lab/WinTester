@@ -1,0 +1,66 @@
+﻿<?xml version='1.0' encoding='utf-8' standalone='yes'?>
+<assembly
+    xmlns="urn:schemas-microsoft-com:asm.v3"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    manifestVersion="1.0"
+    >
+  <assemblyIdentity
+      language="neutral"
+      name="Microsoft-Windows-TerminalServices-RemoteApplications"
+      processorArchitecture="*"
+      version="0.0.0.0"
+      versionScope="nonSxS"
+      />
+  <migration
+      replacementSettingsVersionRange="0"
+      scope="Upgrade,MigWiz,USMT"
+      settingsVersion="0"
+      >
+    <migXml xmlns="">
+      <rules context="System">
+        <include>
+          <objectSet>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Terminal Server\ConnectionHandler\eddcc3ce-6e7e-4f4b-8439-3d9ad4c9440f [CLSID]</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Terminal Server\ConnectionHandler\eddcc3ce-6e7e-4f4b-8439-3d9ad4c9440f [Name]</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Terminal Server\ConnectionHandler\eddcc3ce-6e7e-4f4b-8439-3d9ad4c9440f [Description]</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Terminal Server\ConnectionHandler\eddcc3ce-6e7e-4f4b-8439-3d9ad4c9440f [fAcceptConnection]</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Terminal Server\TerminalTypes\eddcc3ce-6e7e-4f4b-8439-3d9ad4c9440f [Name]</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Terminal Server\TerminalTypes\eddcc3ce-6e7e-4f4b-8439-3d9ad4c9440f [SessionSource]</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\SOFTWARE\Classes\CLSID\{0eb06e8d-d00a-11da-a46c-0040f4b33241} []</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\SOFTWARE\Classes\CLSID\{0eb06e8d-d00a-11da-a46c-0040f4b33241}\InprocServer32 []</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\SOFTWARE\Classes\CLSID\{0eb06e8d-d00a-11da-a46c-0040f4b33241}\InprocServer32 [ThreadingModel]</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WinLogon\ShellPrograms\RdpInit.exe [AppResolverHostProcess]</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WinLogon\ShellPrograms\RdpInit.exe [CloakDesktopWindow]</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WinLogon\ShellPrograms\RdpShell.exe [ShouldStartRailRPC]</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WinLogon\ShellPrograms\ShellAppRuntime.exe [SupportsRailV2]</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Terminal Server\Compatibility\LocalMoveSizeIgnoreList [*]</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\SOFTWARE\Classes\RdpShellExtension\RdpShellLoader [clsid]</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\SOFTWARE\Classes\RdpShellExtension\RdpShellLoader [type]</pattern>
+          </objectSet>
+        </include>
+        <merge script="MigXmlHelper.SourcePriority()">
+          <objectSet>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Terminal Server\ConnectionHandler\eddcc3ce-6e7e-4f4b-8439-3d9ad4c9440f [CLSID]</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Terminal Server\ConnectionHandler\eddcc3ce-6e7e-4f4b-8439-3d9ad4c9440f [Name]</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Terminal Server\ConnectionHandler\eddcc3ce-6e7e-4f4b-8439-3d9ad4c9440f [Description]</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Terminal Server\ConnectionHandler\eddcc3ce-6e7e-4f4b-8439-3d9ad4c9440f [fAcceptConnection]</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Terminal Server\TerminalTypes\eddcc3ce-6e7e-4f4b-8439-3d9ad4c9440f [Name]</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\System\CurrentControlSet\Control\Terminal Server\TerminalTypes\eddcc3ce-6e7e-4f4b-8439-3d9ad4c9440f [SessionSource]</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\SOFTWARE\Classes\CLSID\{0eb06e8d-d00a-11da-a46c-0040f4b33241} []</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\SOFTWARE\Classes\CLSID\{0eb06e8d-d00a-11da-a46c-0040f4b33241}\InprocServer32 []</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\SOFTWARE\Classes\CLSID\{0eb06e8d-d00a-11da-a46c-0040f4b33241}\InprocServer32 [ThreadingModel]</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WinLogon\ShellPrograms\RdpInit.exe [AppResolverHostProcess]</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WinLogon\ShellPrograms\RdpInit.exe [CloakDesktopWindow]</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WinLogon\ShellPrograms\RdpShell.exe [ShouldStartRailRPC]</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\WinLogon\ShellPrograms\ShellAppRuntime.exe [SupportsRailV2]</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Terminal Server\Compatibility\LocalMoveSizeIgnoreList [*]</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\SOFTWARE\Classes\RdpShellExtension\RdpShellLoader [clsid]</pattern>
+            <pattern type="Registry">HKEY_LOCAL_MACHINE\SOFTWARE\Classes\RdpShellExtension\RdpShellLoader [type]</pattern>
+          </objectSet>
+        </merge>
+      </rules>
+    </migXml>
+    <migrationDisplayID>Additional_Options\Windows_Core_Settings</migrationDisplayID>
+  </migration>
+</assembly>
