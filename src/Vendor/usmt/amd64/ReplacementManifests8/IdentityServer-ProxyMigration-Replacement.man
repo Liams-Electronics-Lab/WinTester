@@ -1,0 +1,43 @@
+﻿<?xml version='1.0' encoding='utf-8' standalone='yes'?>
+<assembly
+    xmlns="urn:schemas-microsoft-com:asm.v3"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    manifestVersion="1.0"
+    >
+  <assemblyIdentity
+      language="neutral"
+      name="Microsoft-Windows-IdentityServer-ProxyMigration"
+      processorArchitecture="*"
+      version="0.0.0.0"
+      />
+  <migration
+      alwaysProcess="yes"
+      replacementSettingsVersionRange="0"
+      replacementVersionRange="6.0-6.1"
+      scope="Upgrade,MigWiz,USMT"
+      settingsVersion="0"
+      >
+    <migrationDisplayID>Microsoft-Windows-IdentityServer-ProxyMigration</migrationDisplayID>
+    <registerSDF name="IdentityServer-Proxy"/>
+    <registerSDF name="ADFS-Role-Package"/>
+    <migXml xmlns="">
+      <detects>
+        <detect>
+          <condition>MigXmlHelper.DoesObjectExist( "Registry", "HKLM\SOFTWARE\Microsoft\ADFS2.0\Components [ProxyServer]" )</condition>
+        </detect>
+      </detects>
+    </migXml>
+    <supportedComponents>
+      <supportedComponent>
+        <supportedComponentIdentity
+            language="neutral"
+            name="Microsoft-Windows-IdentityServer-ProxyMigration"
+            processorArchitecture="*"
+            settingsVersionRange="0"
+            versionScope="nonSxS"
+            />
+      </supportedComponent>
+    </supportedComponents>
+  </migration>
+</assembly>
