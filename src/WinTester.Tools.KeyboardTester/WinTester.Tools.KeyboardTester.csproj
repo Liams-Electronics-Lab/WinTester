@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>WinTester.Tools.KeyboardTester</RootNamespace>
+    <!-- Plain net8.0, not net8.0-windows: nothing in this project itself is Windows-only (layout
+         definitions, session/event tracking, and HTML report rendering are all plain managed code); the
+         actual key-capture window lives in WinTester.App (net8.0-windows/WPF), same split as every other
+         Tools.* project's runner-vs-window separation. -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WinTester.Core\WinTester.Core.csproj" />
+    <!-- Report reuses BatteryReportSharedStyle's brand header/footer and print CSS rather than a third
+         copy of that chrome — same reuse BatteryDrainReportBuilder/BatteryChargeReportBuilder already
+         make. No Chart.js needed here (nothing in this report is a time series), so unlike those two this
+         project doesn't touch HtmlReportGenerator.GetVendoredChartJsSource at all. -->
+    <ProjectReference Include="..\WinTester.Reporting\WinTester.Reporting.csproj" />
+  </ItemGroup>
+
+</Project>
