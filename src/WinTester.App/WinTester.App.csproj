@@ -1,0 +1,109 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>WinTester.App</RootNamespace>
+    <AssemblyName>WinTester</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!-- Sets the built .exe's file/taskbar icon. MainWindow.xaml's own Icon="app.ico" (Resource item below)
+         covers the running window's title-bar/Alt-Tab icon — WPF doesn't always pick this one up for that
+         at runtime, so both are set rather than relying on just one. -->
+    <ApplicationIcon>app.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- AudioTesterWindow's visualizer needs sample-level access to what's actually playing (for the FFT
+         spectrum bars / waveform trace), which WPF's own MediaPlayer doesn't expose — NAudio's
+         AudioFileReader + WaveOutEvent + ISampleProvider chain does. -->
+    <PackageReference Include="NAudio" Version="2.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WinTester.Core\WinTester.Core.csproj" />
+    <ProjectReference Include="..\WinTester.Branding\WinTester.Branding.csproj" />
+    <ProjectReference Include="..\WinTester.Sensors\WinTester.Sensors.csproj" />
+    <ProjectReference Include="..\WinTester.Sensors.HwInfo\WinTester.Sensors.HwInfo.csproj" />
+    <ProjectReference Include="..\WinTester.Reporting\WinTester.Reporting.csproj" />
+    <ProjectReference Include="..\WinTester.Tests.Cpu\WinTester.Tests.Cpu.csproj" />
+    <ProjectReference Include="..\WinTester.Tests.Gpu\WinTester.Tests.Gpu.csproj" />
+    <ProjectReference Include="..\WinTester.Tests.Memory\WinTester.Tests.Memory.csproj" />
+    <ProjectReference Include="..\WinTester.Tests.Storage\WinTester.Tests.Storage.csproj" />
+    <ProjectReference Include="..\WinTester.Tools.Bitlocker\WinTester.Tools.Bitlocker.csproj" />
+    <ProjectReference Include="..\WinTester.Tools.Devices\WinTester.Tools.Devices.csproj" />
+    <ProjectReference Include="..\WinTester.Tools.RestorePoints\WinTester.Tools.RestorePoints.csproj" />
+    <ProjectReference Include="..\WinTester.Tools.DiskInfo\WinTester.Tools.DiskInfo.csproj" />
+    <ProjectReference Include="..\WinTester.Tools.HardwareErrors\WinTester.Tools.HardwareErrors.csproj" />
+    <ProjectReference Include="..\WinTester.Tools.Fans\WinTester.Tools.Fans.csproj" />
+    <ProjectReference Include="..\WinTester.Tools.BatteryDrain\WinTester.Tools.BatteryDrain.csproj" />
+    <ProjectReference Include="..\WinTester.Tools.BatteryCharge\WinTester.Tools.BatteryCharge.csproj" />
+    <ProjectReference Include="..\WinTester.Tools.KeyboardTester\WinTester.Tools.KeyboardTester.csproj" />
+    <ProjectReference Include="..\WinTester.Tools.MouseTester\WinTester.Tools.MouseTester.csproj" />
+    <ProjectReference Include="..\WinTester.Tools.WebcamMic\WinTester.Tools.WebcamMic.csproj" />
+    <ProjectReference Include="..\WinTester.Tools.UsbValidator\WinTester.Tools.UsbValidator.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Backs MainWindow.xaml's Icon="app.ico" (title bar / Alt-Tab / taskbar at runtime) — Resource, not
+         None/CopyToOutputDirectory, since WPF's Icon= resolves against embedded resources, not a loose
+         file next to the exe like brand.json/vendor icons are. -->
+    <Resource Include="app.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Default/dev brand profile — ships next to the exe, swap this file (and splash.bmp / brand/logo.png)
+         per store to re-skin the app with no rebuild. -->
+    <None Include="brand.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <!-- Operator app profiles for Recovery Provisioning (3.14). Listed before the built-in profiles; edit next to the exe, no rebuild. -->
+    <None Include="AppProfiles.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <!-- Not included in this drop — add your own splash.bmp to the project root (same folder as this
+         .csproj) before building; it is copied next to the exe automatically once present. -->
+    <None Include="splash.bmp" Condition="Exists('splash.bmp')">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Vendored third-party binaries (Intel PDT compute modules, Chart.js) — not part of source control's
+         build graph by default since they live outside any project folder (../../vendor at repo root).
+         CpuStressTestModule resolves these at runtime relative to AppContext.BaseDirectory, so they must
+         land next to WinTester.exe in both build and publish output, preserving the vendor/intel-pdt/...
+         subfolder structure that path resolution expects. -->
+    <None Include="..\vendor\**\*.*" Exclude="..\vendor\**\*.md">
+      <Link>vendor\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Fan-tool vendor binaries. Unlike the vendor/** block above, these must land FLAT next
+         to WinTester.exe rather than under a vendor/ subfolder, because neither one is resolved by a
+         path this app controls:
+           AsusWinIO64.dll        — loaded by the CLR's DllImport resolver, which searches the app
+                                    directory, not arbitrary subfolders.
+           bzh_dell_smm_io_x64.sys — registered with the Service Control Manager by absolute path built
+                                    from AppContext.BaseDirectory (see DellSmmDriver.Initialize).
+         Both are third-party binaries with their own licence terms; the decision to bundle them was
+         taken for internal-tool use with licensing to be settled separately before any external
+         distribution. -->
+    <None Include="..\vendor\fans\AsusWinIO64.dll">
+      <Link>AsusWinIO64.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+    <None Include="..\vendor\fans\bzh_dell_smm_io_x64.sys">
+      <Link>bzh_dell_smm_io_x64.sys</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

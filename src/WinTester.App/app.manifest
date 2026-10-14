@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<assembly manifestVersion="1.0" xmlns="urn:schemas-microsoft-com:asm.v1">
+  <assemblyIdentity version="1.0.0.0" name="WinTester.App"/>
+
+  <!--
+    Administrator privileges are required for most sensors (CPU/GPU/board temps, some fan/voltage
+    sensors) once LibreHardwareMonitor is reading them. Set here so the elevation prompt is part of the
+    app from the start rather than a surprise later.
+
+    NOTE: this means every `dotnet run` / F5 will trigger a UAC prompt even during pure-UI development
+    with no sensors read yet. If that's too disruptive while iterating, temporarily change level below to
+    "asInvoker" and switch it back to "requireAdministrator" before shipping.
+  -->
+  <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">
+    <security>
+      <requestedPrivileges>
+        <requestedExecutionLevel level="requireAdministrator" uiAccess="false"/>
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+
+  <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
+    <application>
+      <!-- Windows 10 / 11 -->
+      <supportedOS Id="{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}"/>
+    </application>
+  </compatibility>
+</assembly>

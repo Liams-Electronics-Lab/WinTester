@@ -1,0 +1,18 @@
+{
+  // Operator app profiles (Recovery Provisioning). These are checked before the built-in ones, so a setting here wins.
+  // Fields (all optional except name and one of matchName / matchPublisher; * is a wildcard, case does not matter):
+  //   name, matchName, matchPublisher, whenKeyExists (HKLM key path),
+  //   unsupported (reason text: the app is listed but cannot be ticked),
+  //   folderOverride ("{folder}" = the recorded install folder), extraFolders, extraRegistry ("HKLM\\SOFTWARE\\..."),
+  //   excludePatterns (relative to the app folder), defaultSelected (true/false), advice (text shown under the app),
+  //   allow (true = not unsupported, even if a built-in profile blocks the app; the first matching profile that says
+  //   "unsupported" or "allow" decides, and yours come first).
+  // extraFolders are vendor folders outside the app's own folder. They are carried, and a service, scheduled task, Run entry,
+  // COM class or shortcut that points into one is carried with the app. A folder you list that does not exist is reported.
+  // Examples:
+  //   { "name": "My tool", "matchName": "My Tool*", "excludePatterns": [ "cache", "*.tmp" ], "advice": "Cache is not captured." }
+  //   { "name": "Allow Acrobat entry", "matchName": "Adobe Acrobat (64-bit)", "allow": true }
+  //   { "name": "Vendor helper", "matchName": "Vendor App*", "extraFolders": [ "%ProgramData%\\Vendor\\Helper" ],
+  //     "extraRegistry": [ "HKLM\\SOFTWARE\\VendorHelper" ] }
+  "profiles": []
+}

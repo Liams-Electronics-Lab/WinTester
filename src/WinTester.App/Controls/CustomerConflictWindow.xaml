@@ -1,0 +1,85 @@
+<Window x:Class="WinTester.App.Controls.CustomerConflictWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Files already exist"
+        WindowStyle="None"
+        ResizeMode="CanResizeWithGrip"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
+        Width="900" Height="640" MinWidth="700" MinHeight="460"
+        Background="{DynamicResource WindowBackgroundBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="28" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="#1B1B1E" BorderBrush="{DynamicResource AccentBrush}"
+                BorderThickness="1,1,1,0" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+            <Grid>
+                <TextBlock Text="Files already exist at the destinations" Foreground="#B7B7BE" FontSize="11"
+                           VerticalAlignment="Center" Margin="10,0,0,0" />
+                <Button Content="✕" Width="28" Height="28" HorizontalAlignment="Right" VerticalAlignment="Top"
+                        Background="Transparent" Foreground="#B7B7BE" BorderThickness="0"
+                        Click="CancelButton_Click" />
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1" Padding="16">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock x:Name="HeaderText" Grid.Row="0" Foreground="#E1E3E8" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,10" />
+
+                <StackPanel Grid.Row="1" Margin="0,0,0,8">
+                    <RadioButton x:Name="RbReplace" GroupName="Pol" Foreground="White" FontSize="12" Margin="0,2,0,2"
+                                 Content="Replace the existing files with the new ones" Checked="Policy_Changed" />
+                    <RadioButton x:Name="RbNewer" GroupName="Pol" Foreground="White" FontSize="12" Margin="0,2,0,2"
+                                 Content="Replace only if the new file is newer (keep newer files that are already there)" Checked="Policy_Changed" />
+                    <RadioButton x:Name="RbBoth" GroupName="Pol" Foreground="White" FontSize="12" Margin="0,2,0,2"
+                                 Content="Keep both (the new file is saved with a name like &quot;file (2).txt&quot;)" Checked="Policy_Changed" />
+                    <RadioButton x:Name="RbKeep" GroupName="Pol" Foreground="White" FontSize="12" Margin="0,2,0,2"
+                                 Content="Don't replace anything (keep the files that are already there)" Checked="Policy_Changed" />
+                    <RadioButton x:Name="RbChoose" GroupName="Pol" Foreground="White" FontSize="12" Margin="0,2,0,2"
+                                 Content="Choose for each file below" Checked="Policy_Changed" />
+                </StackPanel>
+
+                <StackPanel x:Name="ChooseTools" Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,8" Visibility="Collapsed">
+                    <TextBlock Text="Set all to:" Foreground="#B7B7BE" FontSize="12" VerticalAlignment="Center" Margin="0,0,8,0" />
+                    <Button Content="New file" Width="90" Height="24" Margin="0,0,6,0" Background="#2A2A2E" Foreground="White"
+                            BorderThickness="0" Click="AllNew_Click" />
+                    <Button Content="Existing file" Width="100" Height="24" Margin="0,0,6,0" Background="#2A2A2E" Foreground="White"
+                            BorderThickness="0" Click="AllExisting_Click" />
+                    <Button Content="Keep both" Width="90" Height="24" Background="#2A2A2E" Foreground="White"
+                            BorderThickness="0" Click="AllBoth_Click" />
+                </StackPanel>
+
+                <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto">
+                    <StackPanel x:Name="RowsPanel" Margin="0,0,8,0" />
+                </ScrollViewer>
+
+                <TextBlock x:Name="BlockedText" Grid.Row="4" Foreground="#E05555" FontSize="12" TextWrapping="Wrap" Margin="0,8,0,0" />
+
+                <Grid Grid.Row="5" Margin="0,12,0,0">
+                    <TextBlock x:Name="SummaryText" Foreground="#B7B7BE" FontSize="12" TextWrapping="Wrap" VerticalAlignment="Center"
+                               Margin="0,0,200,0" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button x:Name="CancelButton" Content="Cancel" Width="90" Height="30" Margin="0,0,10,0"
+                                Background="#2A2A2E" Foreground="White" BorderThickness="0" Click="CancelButton_Click" />
+                        <Button x:Name="OkButton" Content="Continue" Width="90" Height="30"
+                                Background="{DynamicResource AccentBrush}" Foreground="White" BorderThickness="0"
+                                Click="OkButton_Click" />
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

@@ -1,0 +1,91 @@
+<Window x:Class="WinTester.App.Controls.ActivationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Windows Activation"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
+        SizeToContent="WidthAndHeight"
+        Background="{DynamicResource WindowBackgroundBrush}"
+        PreviewKeyDown="Window_PreviewKeyDown">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="28" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="#1B1B1E" BorderBrush="{DynamicResource AccentBrush}"
+                BorderThickness="1,1,1,0" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+            <Grid>
+                <TextBlock Text="Windows Activation" Foreground="#B7B7BE" FontSize="11"
+                           VerticalAlignment="Center" Margin="10,0,0,0" />
+                <Button Content="✕" Width="28" Height="28" HorizontalAlignment="Right" VerticalAlignment="Top"
+                        Background="Transparent" Foreground="#B7B7BE" BorderThickness="0"
+                        Click="CloseButton_Click" />
+            </Grid>
+        </Border>
+
+    <Border Grid.Row="1" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1" Padding="24">
+        <StackPanel Width="620">
+
+            <TextBlock Text="Windows Activation"
+                       Foreground="White" FontSize="18" FontWeight="SemiBold"
+                       Margin="0,0,0,4" />
+            <TextBlock x:Name="LoadingText"
+                       Text="Reading activation status..."
+                       Foreground="#7A7A82" FontSize="12" Margin="0,0,0,12" />
+
+            <Grid x:Name="ContentGrid" Visibility="Collapsed">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Genuine / non-genuine badge; resized to fit the dialog rather than shown at native
+                     resolution (both supplied PNGs are considerably larger than this dialog is wide). -->
+                <Border Grid.Column="0" VerticalAlignment="Top" Margin="0,6,20,0">
+                    <Image x:Name="StatusBadgeImage"
+                           Width="150"
+                           Stretch="Uniform"
+                           RenderOptions.BitmapScalingMode="HighQuality" />
+                </Border>
+
+                <Border Grid.Column="1" Background="#161618" BorderBrush="#3D3D42" BorderThickness="1"
+                        CornerRadius="4" Padding="14">
+                    <TextBlock x:Name="StatusText"
+                               FontFamily="Consolas"
+                               FontSize="12.5"
+                               LineHeight="18"
+                               Foreground="#E1E3E8"
+                               TextWrapping="Wrap" />
+                </Border>
+            </Grid>
+
+            <TextBlock x:Name="ActionErrorText"
+                       Foreground="#E0A030" FontSize="11" TextWrapping="Wrap"
+                       Margin="0,14,0,0" Visibility="Collapsed" />
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                <Button x:Name="RefreshButton" Content="Refresh" Width="90" Height="30"
+                        Margin="0,0,10,0" Click="RefreshButton_Click"
+                        Background="#2A2A2E" Foreground="White" BorderThickness="0" />
+                <Button x:Name="BackupLicenseButton" Content="Backup License" Width="130" Height="30"
+                        Margin="0,0,10,0" Click="BackupLicenseButton_Click" IsEnabled="False"
+                        Background="#2A2A2E" Foreground="White" BorderThickness="0" />
+                <Button x:Name="ChangeKeyButton" Content="Change Product Key" Width="150" Height="30"
+                        Margin="0,0,10,0" Click="ChangeKeyButton_Click" IsEnabled="False"
+                        Background="{DynamicResource AccentBrush}" Foreground="White" BorderThickness="0" />
+                <Button x:Name="CloseButton" Content="Close" Width="80" Height="30"
+                        Click="CloseButton_Click"
+                        Background="#2A2A2E" Foreground="White" BorderThickness="0" />
+            </StackPanel>
+
+            <TextBlock Text="Keyboard: Esc = Close" Visibility="Collapsed"
+                       Foreground="#7A7A82" FontSize="10"
+                       HorizontalAlignment="Right" Margin="0,8,0,0" />
+        </StackPanel>
+    </Border>
+    </Grid>
+</Window>

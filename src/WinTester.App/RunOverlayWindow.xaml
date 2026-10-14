@@ -1,0 +1,193 @@
+<Window x:Class="WinTester.App.RunOverlayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:conv="clr-namespace:WinTester.App.Converters"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="True"
+        WindowStartupLocation="Manual">
+
+    <!--
+        A wholly separate top-level Window rather than an overlay Grid inside MainWindow. WPF's "airspace"
+        limitation means a hosted native child window (FurmarkEmbedHost, a HwndHost inside GpuFrameControl)
+        always paints on top of every other WPF element in the same window, regardless of XAML z-order; so
+        there is no way to put WPF content in front of it from within MainWindow itself. A distinct top-level
+        HWND higher in the desktop's z-order doesn't have that problem: it paints over MainWindow's entire
+        client area, FurmarkEmbedHost's child window included, the same way any other window covers another.
+
+        This window is created and shown right after MainWindow goes fullscreen (MainViewModel.EnterFullscreen)
+        and is sized/positioned to exactly match it; it shares MainViewModel as its DataContext so every
+        binding below works the same as it would inside MainWindow.
+
+        Kept borderless/transparent/click-through-free (i.e. NOT WS_EX_TRANSPARENT) on purpose: nothing behind
+        this window is meant to be interactive during a run, so it covers the whole screen and is the only
+        thing that can be clicked while a test runs.
+    -->
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <conv:StringEmptyToVisibilityConverter x:Key="StringEmptyToVis" />
+        <conv:PercentToPixelWidthConverter x:Key="PercentToPixelWidth" />
+        <conv:PercentToClipRectConverter x:Key="PercentToClipRect" />
+    </Window.Resources>
+
+    <Grid x:Name="OverlayUiGrid">
+        <!-- Row 0 is everything above the progress area (stats overlay, Cancel); row 1 is the progress area,
+             sized to its own content. The stats list is measured against row 0's real height, so it only scrolls
+             when it would otherwise run into the progress area. -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.3*" />
+            <ColumnDefinition Width="0.4*" />
+            <ColumnDefinition Width="0.3*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- ============ Top-left: RTSS-style system stats overlay (always-on, every category) ============ -->
+        <!-- Spans all three columns (left-aligned) so it can use the whole free height and grow to fit its rows.
+             Right margin keeps it clear of the Cancel button. LayoutTransform (not RenderTransform) scales with the
+             window height (RunOverlayWindow.UpdateStatsScale), so the available-size measure stays correct. -->
+        <Border Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3"
+                HorizontalAlignment="Left" VerticalAlignment="Top"
+                Margin="28,24,226,16" Padding="14,10"
+                Background="#B0101012" CornerRadius="6">
+            <Border.LayoutTransform>
+                <ScaleTransform x:Name="StatsScale" ScaleX="1" ScaleY="1" />
+            </Border.LayoutTransform>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <ItemsControl ItemsSource="{Binding SystemStatRows}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Margin="0,2">
+                                <TextBlock Text="{Binding Label}"
+                                           Foreground="{Binding AccentBrush}"
+                                           FontWeight="Bold" FontSize="16"
+                                           TextTrimming="CharacterEllipsis" MaxWidth="440" />
+                                <TextBlock Text="{Binding Value}"
+                                           Foreground="{Binding AccentBrush}"
+                                           FontWeight="Bold" FontSize="16"
+                                           Margin="8,0,0,0"
+                                           Visibility="{Binding Value, Converter={StaticResource StringEmptyToVis}}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Border>
+
+        <!-- ============ Top-right: bigger Cancel button ============ -->
+        <Button Grid.Row="0" Grid.Column="2"
+                Content="CANCEL"
+                Command="{Binding CancelCommand}"
+                HorizontalAlignment="Right" VerticalAlignment="Top"
+                Margin="0,24,28,0"
+                Width="170" Height="52"
+                Background="#D93B3B" Foreground="White" BorderThickness="0"
+                FontSize="16" FontWeight="Bold"
+                Cursor="Hand" />
+
+        <!-- ============ Bottom: current-test bar (above) + overall bar (below) ============ -->
+        <Border Grid.Row="1" Grid.ColumnSpan="3" VerticalAlignment="Bottom" Margin="0,0,0,52"
+                HorizontalAlignment="Stretch"
+                Background="#B0101012" CornerRadius="8">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.05*" />
+                <ColumnDefinition Width="0.9*" />
+                <ColumnDefinition Width="0.05*" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="1" Margin="0,12">
+
+                <!-- Current-test bar -->
+                <Grid Margin="0,0,0,12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                        <TextBlock Text="CURRENT TEST" Foreground="White" FontWeight="Bold" FontSize="13" />
+                        <TextBlock Text="{Binding CurrentStageText}" Foreground="#B7B7BE" FontSize="11"
+                                   TextTrimming="CharacterEllipsis"
+                                   Visibility="{Binding CurrentStageText, Converter={StaticResource StringEmptyToVis}}" />
+                        <TextBlock Text="{Binding CountdownText}" Foreground="#3ED6FF" FontWeight="Bold" FontSize="13"
+                                   Visibility="{Binding CountdownText, Converter={StaticResource StringEmptyToVis}}" />
+                    </StackPanel>
+
+                    <Grid Grid.Column="1" x:Name="CurrentBarTrack" Height="40" Margin="14,0,0,0">
+                        <Rectangle Fill="#2A2A2E" RadiusX="5" RadiusY="5" />
+                        <Rectangle x:Name="CurrentFillRect" Fill="#3CB043" HorizontalAlignment="Left" RadiusX="5" RadiusY="5">
+                            <Rectangle.Width>
+                                <MultiBinding Converter="{StaticResource PercentToPixelWidth}">
+                                    <Binding Path="CurrentTestProgressPercent" />
+                                    <Binding ElementName="CurrentBarTrack" Path="ActualWidth" />
+                                </MultiBinding>
+                            </Rectangle.Width>
+                        </Rectangle>
+                        <TextBlock Text="{Binding CurrentTestProgressPercent, StringFormat={}{0:0}%}"
+                                   Width="{Binding ActualWidth, ElementName=CurrentBarTrack}"
+                                   TextAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center"
+                                   FontWeight="Bold" FontSize="18" Foreground="White" IsHitTestVisible="False" />
+                        <TextBlock Text="{Binding CurrentTestProgressPercent, StringFormat={}{0:0}%}"
+                                   Width="{Binding ActualWidth, ElementName=CurrentBarTrack}"
+                                   TextAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center"
+                                   FontWeight="Bold" FontSize="18" Foreground="Black" IsHitTestVisible="False">
+                            <TextBlock.Clip>
+                                <MultiBinding Converter="{StaticResource PercentToClipRect}">
+                                    <Binding Path="CurrentTestProgressPercent" />
+                                    <Binding ElementName="CurrentBarTrack" Path="ActualWidth" />
+                                    <Binding ElementName="CurrentBarTrack" Path="ActualHeight" />
+                                </MultiBinding>
+                            </TextBlock.Clip>
+                        </TextBlock>
+                    </Grid>
+                </Grid>
+
+                <!-- Overall (queue) progress bar -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" Text="OVERALL" Foreground="White" FontWeight="Bold" FontSize="13"
+                               VerticalAlignment="Center" />
+
+                    <Grid Grid.Column="1" x:Name="OverallBarTrack" Height="32" Margin="14,0,0,0">
+                        <Rectangle Fill="#2A2A2E" RadiusX="5" RadiusY="5" />
+                        <Rectangle x:Name="OverallFillRect" Fill="{DynamicResource AccentBrush}" HorizontalAlignment="Left" RadiusX="5" RadiusY="5">
+                            <Rectangle.Width>
+                                <MultiBinding Converter="{StaticResource PercentToPixelWidth}">
+                                    <Binding Path="OverallProgressPercent" />
+                                    <Binding ElementName="OverallBarTrack" Path="ActualWidth" />
+                                </MultiBinding>
+                            </Rectangle.Width>
+                        </Rectangle>
+                        <TextBlock Text="{Binding OverallProgressPercent, StringFormat={}{0:0}%}"
+                                   Width="{Binding ActualWidth, ElementName=OverallBarTrack}"
+                                   TextAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center"
+                                   FontWeight="Bold" FontSize="15" Foreground="White" IsHitTestVisible="False" />
+                        <TextBlock Text="{Binding OverallProgressPercent, StringFormat={}{0:0}%}"
+                                   Width="{Binding ActualWidth, ElementName=OverallBarTrack}"
+                                   TextAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center"
+                                   FontWeight="Bold" FontSize="15" Foreground="Black" IsHitTestVisible="False">
+                            <TextBlock.Clip>
+                                <MultiBinding Converter="{StaticResource PercentToClipRect}">
+                                    <Binding Path="OverallProgressPercent" />
+                                    <Binding ElementName="OverallBarTrack" Path="ActualWidth" />
+                                    <Binding ElementName="OverallBarTrack" Path="ActualHeight" />
+                                </MultiBinding>
+                            </TextBlock.Clip>
+                        </TextBlock>
+                    </Grid>
+                </Grid>
+            </StackPanel>
+        </Grid>
+        </Border>
+    </Grid>
+</Window>
