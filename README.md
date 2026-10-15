@@ -24,8 +24,8 @@ It produces a clear PASS/FAIL verdict and a professional, self-contained HTML re
 - [Build](#build)
 - [Repository Layout](#repository-layout)
 
----
 
+---
 ## Key Capabilities
 
 - Five automated tests (CPU, GPU, Memory, Storage, Power) can run individually or in a fixed sequence with one click.
@@ -82,6 +82,9 @@ Tests run in a fixed order: **CPU, GPU, Memory, Storage, Power**. Select any com
 - Laptops: measured platform power where available, rounded up to the next standard charger size.
 - Informational only.
 
+**Power supply calculation from report** (Gaming laptop, shipped with 230w psu)
+
+<img width="410" height="66" alt="psu_budget" src="https://github.com/user-attachments/assets/0a686863-bee1-4f36-b2bf-5c45d73018b0" />
 
 ---
 
@@ -129,6 +132,9 @@ Tools launch individually from tiles and are independent of the Tab 1 queue and 
 ---
 
 ## Reporting
+---
+<img width="1141" height="1257" alt="report1" src="https://github.com/user-attachments/assets/f11e7d5f-9545-4641-8eae-72e11ac6735d" />
+---
 
 [Example Report](https://htmlpreview.github.io/?https://github.com/Liams-Electronics-Lab/WinTester/blob/main/Sample_Test_report.html)
 
