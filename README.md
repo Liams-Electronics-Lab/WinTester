@@ -130,6 +130,8 @@ Tools launch individually from tiles and are independent of the Tab 1 queue and 
 
 ## Reporting
 
+[Example Report](https://htmlpreview.github.io/?https://github.com/Liams-Electronics-Lab/WinTester/blob/main/Sample_Test_report.html)
+
 - Single self contained HTML file.
 - Report name: `Report-<session id>.html` (suffixed per run for multi run sessions).
 - Overall and per-test PASS/FAIL with failure reasons.
