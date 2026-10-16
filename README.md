@@ -136,7 +136,8 @@ Tools launch individually from tiles and are independent of the Tab 1 queue and 
 <img width="1141" height="1257" alt="report1" src="https://github.com/user-attachments/assets/f11e7d5f-9545-4641-8eae-72e11ac6735d" />
 ---
 
-[Example Report](https://htmlpreview.github.io/?https://github.com/Liams-Electronics-Lab/WinTester/blob/main/Sample_Test_report.html)
+[Example SUITE Report](https://htmlpreview.github.io/?https://github.com/Liams-Electronics-Lab/WinTester/blob/main/Sample_Test_report.html)
+[Example CHARGE Report](https://htmlpreview.github.io/?https://github.com/Liams-Electronics-Lab/WinTester/blob/main/Battery_Charge_Report_2026-10-16_092656.html)
 
 - Single self contained HTML file.
 - Report name: `Report-<session id>.html` (suffixed per run for multi run sessions).
